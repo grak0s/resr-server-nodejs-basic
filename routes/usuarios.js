@@ -14,6 +14,8 @@ const {
 } = require("../helpers/db-validator");
 
 const { validarCampos } = require("../middlewares/validar-campos");
+const { validarJWT } = require("../middlewares/validar-jwt");
+const { esAdminRole, tieneRole } = require("../middlewares/validar-roles");
 
 const router = Router();
 
@@ -50,6 +52,9 @@ router.post(
 router.delete(
   "/:id",
   [
+    validarJWT,
+    //esAdminRole,
+    tieneRole("ADMIN_ROLE", "VENTAR_ROLE", "OTRO_ROLE"),
     check("id", "No es un id valido").isMongoId(),
     check("id").custom(existeUsuarioPorId),
     validarCampos,
